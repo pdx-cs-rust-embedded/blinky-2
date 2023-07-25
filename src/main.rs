@@ -5,19 +5,21 @@ use panic_rtt_target as _;
 use rtt_target::rtt_init_print;
 
 use cortex_m_rt::entry;
-use microbit::{board::Board, hal::prelude::*};
+use microbit::{board::Board, hal::{prelude::*, Timer}};
 
 #[entry]
 fn main() -> ! {
     rtt_init_print!();
     let board = Board::take().unwrap();
-    let mut col = board.display_pins.col1;
-    let mut row = board.display_pins.row1;
+    let mut d = board.display_pins;
+    let mut timer = Timer::new(board.TIMER0);
     
-    col.set_low().unwrap();
-    row.set_high().unwrap();
+    d.col1.set_low().unwrap();
 
     loop {
-        continue;
+        d.row1.set_high().unwrap();
+        timer.delay_ms(500u16);
+        d.row1.set_low().unwrap();
+        timer.delay_ms(500u16);
     }
 }
